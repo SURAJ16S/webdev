@@ -1,5 +1,5 @@
-require("dotenv").config();
-const express = require("express");
+app.get('/loginup', (req, res) => {
+  const token = req.cookies.token;
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -108,6 +108,13 @@ app.get('/about', (req, res) => {
   //showing the index.html page
   res.sendFile(__dirname + '/about.html');
 });
+
+app.get('/loginup', (req, res) => {
+  const token = req.cookies.token;
+  //showing the index.html page
+  res.sendFile(__dirname + 'loginup.html');
+}
+}
 // Google OAuth Strategy
 
 passport.use(
