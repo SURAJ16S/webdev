@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #dd9426;
+            color: black;
+            font-family: 'Roboto', Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding-top: 60px; /* Adjust for fixed navbar */
+        }
+        nav {
+            width: 100%;
+            background-color: black;
+            padding: 10px 0;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            z-index: 1000;
+        }
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+        nav li {
+            margin: 0 15px;
+        }
+        nav a {
+            color: #dd9426;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .login-btn {
+            background-color: #dd9426;
+            color: black;
+            padding: 5px 10px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+        .login-btn:hover {
+            background-color: #c87f1e;
+        }
+        .card-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            flex-grow: 1;
+            margin-top: 20px; /* Adjust for fixed navbar */
+        }
+        .card {
+            background-color: black;
+            color: #dd9426;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 300px;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+        .card img {
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/planner.html">Planner</a></li>
+            <li><a href="/portfolio.html">Portfolio</a></li>
+            <li><a href="/contact.html">Contact</a></li>
+        </ul>
+        <a href="/loginup.html" target="_blank" class="login-btn">Login/Signup</a>
+    </nav>
+    <div class="card-container">
+        <div class="card">
+            <img src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1739009644~exp=1739013244~hmac=02b78f9d46a926bef1d1a61e189308f978eb5bcf301e2c40af6e6954bbe90863&w=826" height="50px" width="50px" alt="Profile Photo">
+            <h2>Yash Ambadas Borude</h2>
+            <p>Email: <a href="mailto:yashborude@gmail.com">yashborude@gmail.com</a></p>
+        </div>
+        <div class="card">
+            <img src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1739009644~exp=1739013244~hmac=02b78f9d46a926bef1d1a61e189308f978eb5bcf301e2c40af6e6954bbe90863&w=826" height="50px" width="50px" alt="Profile Photo">
+            <h2>Suraj Siddharth Bagul</h2>
+            <p>Email: <a href="mailto:suraj240305@gmail.com">suraj240305@gmail.com</a></p>
+        </div>
+        <div class="card">
+            <img src="https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg?t=st=1739009644~exp=1739013244~hmac=02b78f9d46a926bef1d1a61e189308f978eb5bcf301e2c40af6e6954bbe90863&w=826" height="50px" width="50px" alt="Profile Photo">
+            <h2>Abhishek Anil chaudhari</h2>
+            <p>Email: <a href="mailto:abhishek@gmail.com">abhishek@gmail.com</a></p>
+        </div>
+    </div>
+</body>
+</html>
