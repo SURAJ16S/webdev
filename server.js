@@ -7,7 +7,7 @@ const passport = require("passport");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const User = require("./models/User"); // ✅ Correct path
+const User = require("./models/User"); // Correct path
 const app = express();
 require("dotenv").config();
 
@@ -30,12 +30,11 @@ app.use(passport.session());
 // MongoDB Connection
 
 mongoose
-  .connect(process.env.MONGO_URI, {
+  .connect(`mongodb://${process.env.MONGO_URI}`, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
   .then(() => console.log("✅ MongoDB Connected"))
-
   .catch((err) => console.log("❌ MongoDB Connection Error:", err));
 
 // JWT Token Function
@@ -43,7 +42,6 @@ mongoose
 const generateToken = (user) => {
   return jwt.sign(
     { id: user._id, email: user.email },
-
     process.env.JWT_SECRET,
     { expiresIn: "1h" }
   );
@@ -76,34 +74,54 @@ app.post("/signup", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-
+  
   const user = await User.findOne({ email });
-
+  
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return res.status(400).json({ message: "Invalid credentials" });
   }
-
+  
   const token = generateToken(user);
-
+  
   res.cookie("token", token, { httpOnly: true, secure: false });
-
+  
   res.json({ message: "Login successful", token });
 });
 
+//homepage
+app.get('/', (req, res) => {
+  const token = req.cookies.token;
+  //showing the index.html page
+  res.sendFile(__dirname + '/index.html');
+});
+
+//contact page
+app.get('/contact', (req, res) => {
+  const token = req.cookies.token;
+  //showing the index.html page
+  res.sendFile(__dirname + '/contact.html');
+});
+
+//about page
+app.get('/about', (req, res) => {
+  const token = req.cookies.token;
+  //showing the index.html page
+  res.sendFile(__dirname + '/about.html');
+});
 // Google OAuth Strategy
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
-
+      
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-
+      
       callbackURL: "/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       let user = await User.findOne({ googleId: profile.id });
-
+      
       if (!user) {
         user = new User({
           googleId: profile.id,
@@ -129,35 +147,26 @@ passport.deserializeUser(async (id, done) => {
 
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-  
-
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
- const token = generateToken(req.user);
- res.cookie('token', token, { httpOnly: true, secure: false });
- res.redirect('/dashboard');
-
+  const token = generateToken(req.user);
+  res.cookie('token', token, { httpOnly: true, secure: false });
+  res.redirect('/dashboard');
 });
-
-  
 
 // Protected Route
 
 app.get('/dashboard', (req, res) => {
- const token = req.cookies.token;
- if (!token) return res.status(401).json({ message: 'Unauthorized' });
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ message: 'Unauthorized' });
 
-  
- try {
- const decoded = jwt.verify(token, process.env.JWT_SECRET);
- res.json({ message: 'Welcome to the dashboard', userId: decoded.id });
- } catch (error) {
- res.status(401).json({ message: 'Invalid Token' });
- }
-
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.json({ message: 'Welcome to the dashboard', userId: decoded.id });
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid Token' });
+  }
 });
-
-  
 
 // Start Server
 
-app.listen(5000, () => console.log('🚀 Server running on port 5000'));
+app.listen(5000, () => console.log(' Server running on port 5000'));
