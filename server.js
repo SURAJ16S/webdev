@@ -125,3 +125,37 @@ passport.deserializeUser(async (id, done) => {
 
   done(null, user);
 });
+// Google OAuth Routes
+
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+app.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/" }),
+  (req, res) => {
+    const token = generateToken(req.user);
+    res.cookie("token", token, { httpOnly: true, secure: false });
+    res.redirect("/dashboard");
+  }
+);
+
+// Protected Route
+
+app.get("/dashboard", (req, res) => {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ message: "Unauthorized" });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.json({ message: "Welcome to the dashboard", userId: decoded.id });
+  } catch (error) {
+    res.status(401).json({ message: "Invalid Token" });
+  }
+});
+
+// Start Server
+
+app.listen(5000, () => console.log("🚀 Server running on port 5000"));
