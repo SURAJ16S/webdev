@@ -1,5 +1,3 @@
-app.get('/loginup', (req, res) => {
-  const token = req.cookies.token;
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
@@ -8,6 +6,7 @@ const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("./models/User"); // Correct path
+const express = require("express");
 const app = express();
 require("dotenv").config();
 
@@ -110,12 +109,10 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/loginup', (req, res) => {
-  const token = req.cookies.token;
+app.get('/loginup', (req, res) => {
   //showing the index.html page
-  res.sendFile(__dirname + 'loginup.html');
-}
-}
-// Google OAuth Strategy
+  res.sendFile(__dirname + '/loginup.html');
+});
 
 passport.use(
   new GoogleStrategy(
@@ -129,7 +126,8 @@ passport.use(
     async (accessToken, refreshToken, profile, done) => {
       let user = await User.findOne({ googleId: profile.id });
       
-      if (!user) {
+    async (accessToken, refreshToken, profile, done) => {
+      // accessToken and refreshToken are not used
         user = new User({
           googleId: profile.id,
           email: profile.emails[0].value,

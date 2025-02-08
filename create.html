@@ -4,8 +4,110 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create a List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .item input[type="text"],
+        .item input[type="number"] {
+            width: calc(50% - 10px);
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .item button {
+            padding: 10px 20px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .item button:hover {
+            background-color: #218838;
+        }
+        .total {
+            text-align: right;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #333;
+        }
+        #item-list .item {
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        #item-list .item span {
+            display: inline-block;
+            width: 45%;
+        }
+    </style>
 </head>
 <body>
-    
+    <div class="container">
+        <h1>Grocery List</h1>
+        <div id="item-list"></div>
+        <div class="item">
+            <input type="text" id="item-name" placeholder="Item name">
+            <input type="number" id="item-price" placeholder="Price">
+            <button onclick="addItem()">Add</button>
+        </div>
+        <div class="total">
+            <strong>Total: $<span id="total-price">0.00</span></strong>
+        </div>
+    </div>
+
+    <script>
+        let totalPrice = 0;
+
+        function addItem() {
+            const itemName = document.getElementById('item-name').value;
+            const itemPrice = parseFloat(document.getElementById('item-price').value);
+
+            if (itemName && !isNaN(itemPrice)) {
+                const itemList = document.getElementById('item-list');
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'item';
+                itemDiv.innerHTML = `
+                    <span>${itemName}</span>
+                    <span>$${itemPrice.toFixed(2)}</span>
+                `;
+                itemList.appendChild(itemDiv);
+
+                totalPrice += itemPrice;
+                document.getElementById('total-price').innerText = totalPrice.toFixed(2);
+
+                document.getElementById('item-name').value = '';
+                document.getElementById('item-price').value = '';
+            }
+        }
+    </script>
 </body>
 </html>
