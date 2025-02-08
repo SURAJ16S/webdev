@@ -5,29 +5,25 @@ const passport = require("passport");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const User = require("./models/User"); // Correct path
+const User = require("./models/User"); 
 const express = require("express");
 const app = express();
 require("dotenv").config();
 
 // Middleware
-
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false, httpOnly: true },
-  })
-);
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false, httpOnly: true },
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 // MongoDB Connection
-
 mongoose
   .connect(`mongodb://${process.env.MONGO_URI}`, {
     useNewUrlParser: true,
@@ -37,7 +33,6 @@ mongoose
   .catch((err) => console.log("❌ MongoDB Connection Error:", err));
 
 // JWT Token Function
-
 const generateToken = (user) => {
   return jwt.sign(
     { id: user._id, email: user.email },
@@ -47,7 +42,6 @@ const generateToken = (user) => {
 };
 
 // Local Signup
-
 app.post("/signup", async (req, res) => {
   const { email, password, username } = req.body;
 
@@ -70,47 +64,41 @@ app.post("/signup", async (req, res) => {
 });
 
 // Local Login
-
 app.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  
+
   const user = await User.findOne({ email });
-  
+
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return res.status(400).json({ message: "Invalid credentials" });
   }
-  
+
   const token = generateToken(user);
-  
+
   res.cookie("token", token, { httpOnly: true, secure: false });
-  
+
   res.json({ message: "Login successful", token });
 });
 
 //homepage
 app.get('/', (req, res) => {
   const token = req.cookies.token;
-  //showing the index.html page
   res.sendFile(__dirname + '/index.html');
 });
 
 //contact page
 app.get('/contact', (req, res) => {
   const token = req.cookies.token;
-  //showing the index.html page
   res.sendFile(__dirname + '/contact.html');
 });
 
 //about page
 app.get('/about', (req, res) => {
   const token = req.cookies.token;
-  //showing the index.html page
   res.sendFile(__dirname + '/about.html');
 });
 
 app.get('/loginup', (req, res) => {
-app.get('/loginup', (req, res) => {
-  //showing the index.html page
   res.sendFile(__dirname + '/loginup.html');
 });
 
@@ -118,16 +106,13 @@ passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
-      
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      
       callbackURL: "/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       let user = await User.findOne({ googleId: profile.id });
-      
-    async (accessToken, refreshToken, profile, done) => {
-      // accessToken and refreshToken are not used
+
+      if (!user) {
         user = new User({
           googleId: profile.id,
           email: profile.emails[0].value,
@@ -148,8 +133,8 @@ passport.deserializeUser(async (id, done) => {
 
   done(null, user);
 });
-// Google OAuth Routes
 
+// Google OAuth Routes
 app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
 app.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), (req, res) => {
@@ -159,7 +144,6 @@ app.get('/auth/google/callback', passport.authenticate('google', { failureRedire
 });
 
 // Protected Route
-
 app.get('/dashboard', (req, res) => {
   const token = req.cookies.token;
   if (!token) return res.status(401).json({ message: 'Unauthorized' });
@@ -173,5 +157,4 @@ app.get('/dashboard', (req, res) => {
 });
 
 // Start Server
-
 app.listen(5000, () => console.log(' Server running on port 5000'));
